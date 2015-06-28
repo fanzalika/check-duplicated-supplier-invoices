@@ -6,9 +6,11 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 class Duplicate_Invoice(models.Model):
     _inherit = 'account.invoice' 
     
-    @api.one
+    @api.multi
     def check_invoice_duplicate(self, reference):
-        msg = 'La referencia de factura ' + reference + 'ya ha sido creada!' 
+        if not reference:
+            return
+        msg = 'La referencia de factura ' + reference + ' ya ha sido creada!' 
         numero = self.search_count([('type','=','in_invoice'),('reference','=',reference)])
         if numero > 0:
             raise Warning(msg)
